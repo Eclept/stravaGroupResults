@@ -62,30 +62,36 @@ START_ATHLETE_FIRSTNAME=Boris
 START_ATHLETE_LASTNAME=P.
 START_ACTIVITY_NAME=Morning Run
 START_DISTANCE_KM=4.11
+START_MOVING_TIME=1470
+START_ELAPSED_TIME=1483
 ```
 
-The script matches on all four fields simultaneously to avoid false matches:
+The script matches on all six fields simultaneously to avoid false matches:
 - Athlete first name (exact)
 - Athlete last name (exact — Strava abbreviates last names in club feeds, e.g. `P.` not `Petelj`)
 - Activity name (exact)
 - Distance (within ±0.05 km)
+- Moving time in seconds (exact, optional)
+- Elapsed time in seconds (exact, optional)
+
+`START_MOVING_TIME` and `START_ELAPSED_TIME` are optional — if omitted, only the first four fields are used. Setting them makes false matches practically impossible.
 
 If the marker is not found, the script falls back to using all activities and prints a warning.
 
-If `START_*` variables are not set, all fetched activities are included.
+If no `START_*` variables are set, all fetched activities are included.
 
 ### How to find the correct values
 
-Run the script once without a marker set to print all activities:
+Temporarily add a debug listing to the script by commenting out the marker variables in `.env`, then run to see all activities with their times:
 
 ```
-[0]  Milan S.  | Evening Run   | 10.00 km | Run
-[1]  Nemanja A.| Evening Run   | 10.01 km | Run
+[0]  Milan S.  | Evening Run  | 10.00 km | moving: 3120s | elapsed: 3245s
+[1]  Nemanja A.| Evening Run  | 10.01 km | moving: 3600s | elapsed: 3720s
 ...
-[31] Boris P.  | Morning Run   |  4.11 km | Run
+[37] Boris P.  | Morning Run  |  4.11 km | moving: 1470s | elapsed: 1483s
 ```
 
-Identify the activity that marks the start of your period, then copy the values exactly as shown into `.env`.
+Copy the values exactly as shown into `.env`.
 
 > **Note on last names:** Strava only returns the first letter of the last name for club members (e.g. `P.`). Use that abbreviated form for `START_ATHLETE_LASTNAME`.
 
