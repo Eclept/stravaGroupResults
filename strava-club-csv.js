@@ -102,7 +102,12 @@ function aggregateRunners(activities) {
   const map = new Map();
 
   for (const act of activities) {
-    if (act.type !== 'Run' && act.type !== 'VirtualRun') continue;
+    const actType = act.sport_type ?? act.type;
+    if (actType !== 'Run' && actType !== 'VirtualRun' && actType !== 'TrailRun') continue;
+
+    const paceMinPerKm = (act.moving_time / 60) / (act.distance / 1000);
+    const maxPace = actType === 'TrailRun' ? 12.0 : 8.0;
+    if (!isFinite(paceMinPerKm) || paceMinPerKm > maxPace) continue;
 
     const name = `${act.athlete?.firstname ?? ''} ${act.athlete?.lastname ?? ''}`.trim();
     if (!name) continue;
